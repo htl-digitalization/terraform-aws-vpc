@@ -4,7 +4,7 @@ provider "aws" {
 
 locals {
   name   = "ex-${replace(basename(path.cwd), "_", "-")}"
-  region = "eu-west-1"
+  region = "ap-southeast-1"
 
   azs               = ["${local.region}a", "${local.region}b", "${local.region}c"]
   preview_partition = cidrsubnets(aws_vpc_ipam_preview_next_cidr.this.cidr, 2, 2, 2)
