@@ -1,15 +1,3 @@
-terraform {
-  backend "remote" {
-    hostname     = "app.terraform.io"
-    organization = "thl1g15"
-
-    workspaces {
-      prefix = "terraform-aws-vpc" # copy your workspace prefix on trimprefix("${var.TFC_WORKSPACE_NAME}", "my-workspace-") function
-    }
-  }
-}
-
-
 provider "aws" {
   region = local.region
 }
