@@ -186,7 +186,7 @@ module "vpc_endpoints_nocreate" {
 ################################################################################
 
 data "aws_security_group" "default" {
-  name   = "default"
+  name   = "test-terraform-vpc"
   vpc_id = module.vpc.vpc_id
 }
 
