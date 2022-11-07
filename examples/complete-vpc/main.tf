@@ -249,22 +249,22 @@ resource "aws_security_group" "vpc_tls" {
 
 ############################################################
 
-resource "aws_instance" "test-vpn-instance" {
-  ami           = "ami-007cfa135d2f26f76"
-  instance_type = "t2.micro"
-  vpc_security_group_ids = [data.aws_security_group.default.id]
-  subnet_id              = module.vpc.private_subnets[0]
+# resource "aws_instance" "test-vpn-instance" {
+#   ami           = "ami-007cfa135d2f26f76"
+#   instance_type = "t2.micro"
+#   vpc_security_group_ids = [data.aws_security_group.default.id]
+#   subnet_id              = module.vpc.private_subnets[0]
 
-  credit_specification {
-    cpu_credits = "unlimited"
-  }
+#   credit_specification {
+#     cpu_credits = "unlimited"
+#   }
 
-  lifecycle {
-    prevent_destroy = true
-  }
+#   lifecycle {
+#     prevent_destroy = true
+#   }
 
-  tags = {
-    Name = "test-vpn-instance"
-    Project = "TestVPN"
-  } 
-}
+#   tags = {
+#     Name = "test-vpn-instance"
+#     Project = "TestVPN"
+#   } 
+# }
