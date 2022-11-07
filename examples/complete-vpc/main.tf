@@ -38,46 +38,43 @@ module "vpc" {
   redshift_subnet_names    = ["Redshift Subnet One", "Redshift Subnet Two", "Redshift Subnet Three"]
   intra_subnet_names       = []
 
-  create_database_subnet_group = false
+  # create_database_subnet_group = false
 
-  manage_default_network_acl = true
-  default_network_acl_tags   = { Name = "${local.name}-default" }
+  # manage_default_network_acl = true
+  # default_network_acl_tags   = { Name = "${local.name}-default" }
 
-  manage_default_route_table = true
-  default_route_table_tags   = { Name = "${local.name}-default" }
+  # manage_default_route_table = true
+  # default_route_table_tags   = { Name = "${local.name}-default" }
 
-  manage_default_security_group = true
-  default_security_group_tags   = { Name = "${local.name}-default" }
+  # manage_default_security_group = true
+  # default_security_group_tags   = { Name = "${local.name}-default" }
 
-  enable_dns_hostnames = true
-  enable_dns_support   = true
+  # enable_dns_hostnames = true
+  # enable_dns_support   = true
 
-  enable_nat_gateway = true
-  single_nat_gateway = true
+  enable_nat_gateway = false
+  single_nat_gateway = false
 
-  customer_gateways = {
-    IP1 = {
-      bgp_asn     = 65112
-      ip_address  = "1.2.3.4"
-      device_name = "some_name"
-    },
-    IP2 = {
-      bgp_asn    = 65112
-      ip_address = "5.6.7.8"
-    }
-  }
+  # customer_gateways = {
+  #   IP1 = {
+  #     bgp_asn     = 65112
+  #     # bgp_asn    = 65000 declared in vpn stuff
+  #     ip_address  = var.customer_ip
+  #     device_name = "TPP device"
+  #   }
+  # }
 
-  enable_vpn_gateway = true
+  # enable_vpn_gateway = true
 
-  enable_dhcp_options              = true
-  dhcp_options_domain_name         = "service.consul"
-  dhcp_options_domain_name_servers = ["127.0.0.1", "10.10.0.2"]
+  # enable_dhcp_options              = false
+  # dhcp_options_domain_name         = "service.consul"
+  # dhcp_options_domain_name_servers = ["127.0.0.1", "10.10.0.2"]
 
-  # VPC Flow Logs (Cloudwatch log group and IAM role will be created)
-  enable_flow_log                      = true
-  create_flow_log_cloudwatch_log_group = true
-  create_flow_log_cloudwatch_iam_role  = true
-  flow_log_max_aggregation_interval    = 60
+  # # VPC Flow Logs (Cloudwatch log group and IAM role will be created)
+  # enable_flow_log                      = false
+  # create_flow_log_cloudwatch_log_group = false
+  # create_flow_log_cloudwatch_iam_role  = false
+  # flow_log_max_aggregation_interval    = 60
 
   tags = local.tags
 }
@@ -247,4 +244,27 @@ resource "aws_security_group" "vpc_tls" {
   }
 
   tags = local.tags
+}
+
+
+############################################################
+
+resource "aws_instance" "test-vpn-instance" {
+  ami           = "ami-007cfa135d2f26f76"
+  instance_type = "t2.micro"
+  vpc_security_group_ids = [data.aws_security_group.default.id]
+  subnet_id              = module.vpc.private_subnets[0]
+
+  credit_specification {
+    cpu_credits = "unlimited"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  tags = {
+    Name = "test-vpn-instance"
+    Project = "TestVPN"
+  } 
 }
